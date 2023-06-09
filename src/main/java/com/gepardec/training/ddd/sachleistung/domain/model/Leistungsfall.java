@@ -13,6 +13,8 @@ public class Leistungsfall {
     @Size(min = 1, max = 50)
     private final String nummer;
 
+    private final Gesamtleistung gesamtleistung;
+
     @NotNull
     private Status status;
 
@@ -25,15 +27,17 @@ public class Leistungsfall {
 
     private LocalDateTime abgelehntAm;
 
-    private Leistungsfall(String nummer) {
+    // TODO: Implementiere Domänen Events
+
+    private Leistungsfall(final String nummer, final Status status, final Gesamtleistung gesamtleistung) {
         this.nummer = Objects.requireNonNull(nummer, "Ein Leistungsfall muss eine Id haben");
+        this.status = Objects.requireNonNull(status, "Ein Leistungsfall muss einen Status");
+        this.gesamtleistung = Objects.requireNonNull(gesamtleistung, "Ein Leistungsfall muss eine Gesamtleistung haben");
     }
 
     // Factory Methode, die einen korrekt initialisierten Leistungsfall erzeugt.
-    public static Leistungsfall neu(final String id) {
-        var fall = new Leistungsfall(id);
-        fall.status = Status.NEU;
-        return fall;
+    public static Leistungsfall neu(final String nummer, final Status status, final Gesamtleistung gesamtleistung) {
+        return new Leistungsfall(nummer, Status.NEU, gesamtleistung);
     }
 
     // HINT: Die Domänen aktionen dürfen nicht ein zweites Mal ausgeführt werden, was am Status zu erkennen ist!
@@ -45,6 +49,10 @@ public class Leistungsfall {
     // Getter/Setter
     public String getNummer() {
         return nummer;
+    }
+
+    public Gesamtleistung getGesamtleistung() {
+        return gesamtleistung;
     }
 
     public Status getStatus() {

@@ -1,6 +1,7 @@
 package com.gepardec.training.ddd.sachleistung.domain.model;
 
 import io.smallrye.common.constraint.NotNull;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
 
@@ -16,11 +17,15 @@ public class Einzelleistung {
     @Size(min = 1, max = 100)
     private final String name;
 
+    @NotNull
+    @DecimalMin("0.00")
     private final BigDecimal nettoBetrag;
 
+    @DecimalMin("0.00")
     private final BigDecimal mehrwertSteuer;
 
     @NotNull
+    @DecimalMin("0.00")
     private final BigDecimal bruttoBetrag;
 
     public Einzelleistung(int ordinal, String name, BigDecimal nettoBetrag, BigDecimal mehrwertSteuer) {
@@ -28,9 +33,9 @@ public class Einzelleistung {
         this.name = Objects.requireNonNull(name, "Eine Einzelleistung braucht einen Namen");
         this.nettoBetrag = Objects.requireNonNull(nettoBetrag, "Eine Einzelleistung braucht einen Nettobetrag");
         this.mehrwertSteuer = mehrwertSteuer;
-        if(this.mehrwertSteuer != null && BigDecimal.ZERO.compareTo(mehrwertSteuer) == 0) {
+        if (this.mehrwertSteuer != null && BigDecimal.ZERO.compareTo(mehrwertSteuer) == 0) {
             this.bruttoBetrag = this.nettoBetrag.add(nettoBetrag.multiply(mehrwertSteuer).divide(new BigDecimal("100.00"), RoundingMode.HALF_EVEN));
-        }else {
+        } else {
             this.bruttoBetrag = this.nettoBetrag;
         }
     }
@@ -39,12 +44,8 @@ public class Einzelleistung {
         return new Einzelleistung(ordinal, name, nettoBetrag, Objects.requireNonNull(mehrwertSteuer, "Eine normale Einzelleistung braucht eine MehrwertSteuer"));
     }
 
-    public static Einzelleistung leer(final int ordinal, final String name) {
-        return new Einzelleistung(ordinal, name, BigDecimal.ZERO, null);
-    }
-    public static Einzelleistung mehrwertSteuerbefreit(final int ordinal, final String name, final BigDecimal nettoBetrag) {
-        return new Einzelleistung(ordinal, name, nettoBetrag, null);
-    }
+    // TODO: Implementiere eine Factory Methode, die eine leere Einzeleistung erzeugt.
+    // TODO: Implementiere eine Factory Methode, die eine MWST-befreite Einzeleistung erzeugt.
 
     public int getOrdinal() {
         return ordinal;
