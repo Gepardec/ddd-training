@@ -13,13 +13,12 @@ import java.util.Set;
 @Table(name = "Gesamtleistung")
 public class JPAGesamtleistung extends PanacheEntityBase  {
 
+    @Id
+    public String leistungsfallNummer;
+
     @NotNull
     @Size(min = 1, max = 50)
-    @Id
     public String name;
-
-    @OneToMany(mappedBy = "gesamtleistung")
-    public Set<JPAEinzelleistung> einzelleistungen = new HashSet<>(0);
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(updatable = false)
@@ -27,6 +26,13 @@ public class JPAGesamtleistung extends PanacheEntityBase  {
 
     @Temporal(TemporalType.TIMESTAMP)
     public LocalDateTime modifiziertAm;
+
+    @ElementCollection
+    public Set<JPAEinzelleistung> einzelleistungen = new HashSet<>(0);
+
+    @MapsId
+    @OneToOne(fetch = FetchType.LAZY)
+    public JPALeistungsfall leistungsfall;
 
     @PrePersist
     private void onPersist(){

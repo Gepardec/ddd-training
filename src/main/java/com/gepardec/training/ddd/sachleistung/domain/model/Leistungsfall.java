@@ -1,6 +1,5 @@
 package com.gepardec.training.ddd.sachleistung.domain.model;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -9,16 +8,18 @@ import java.util.Objects;
 
 public class Leistungsfall {
 
-    @NotBlank
     @Size(min = 1, max = 50)
     private final String nummer;
+
+    @Size(min = 10, max = 10)
+    private final String vsnr;
 
     private final Gesamtleistung gesamtleistung;
 
     @NotNull
     private Status status;
 
-    @Size(min = 5, max = 255)
+    @Size(max = 255)
     private String ablehnungGrund;
 
     private LocalDateTime angewiesenAm;
@@ -29,18 +30,19 @@ public class Leistungsfall {
 
     // TODO: Implementiere Domänen Events
 
-    private Leistungsfall(final String nummer, final Status status, final Gesamtleistung gesamtleistung) {
+    private Leistungsfall(final String nummer, final String vsnr, final Status status, final Gesamtleistung gesamtleistung) {
         this.nummer = Objects.requireNonNull(nummer, "Ein Leistungsfall muss eine Id haben");
+        this.vsnr = Objects.requireNonNull(vsnr, "Ein Leistungsfall muss einer VSNR zugeordnet sein");
         this.status = Objects.requireNonNull(status, "Ein Leistungsfall muss einen Status");
         this.gesamtleistung = Objects.requireNonNull(gesamtleistung, "Ein Leistungsfall muss eine Gesamtleistung haben");
     }
 
     // Factory Methode, die einen korrekt initialisierten Leistungsfall erzeugt.
-    public static Leistungsfall neu(final String nummer, final Status status, final Gesamtleistung gesamtleistung) {
-        return new Leistungsfall(nummer, Status.NEU, gesamtleistung);
+    public static Leistungsfall neu(final String nummer, final String vsnr, final Gesamtleistung gesamtleistung) {
+        return new Leistungsfall(nummer, vsnr, Status.NEU, gesamtleistung);
     }
 
-    // HINT: Die Domänen aktionen dürfen nicht ein zweites Mal ausgeführt werden, was am Status zu erkennen ist!
+    // HINT: Remind the business rules in the README.adoc!
     // TODO: Implementiere eine Domänen Methode, die den Leistungsfall zur Anweisung freigibt
     // TODO: Implementiere eine Domänen Methode, die den Leistungsfall anweist
     // TODO: Implementiere eine Domänen Methode, die den Leistungsfall storniert
@@ -49,6 +51,10 @@ public class Leistungsfall {
     // Getter/Setter
     public String getNummer() {
         return nummer;
+    }
+
+    public String getVsnr() {
+        return vsnr;
     }
 
     public Gesamtleistung getGesamtleistung() {

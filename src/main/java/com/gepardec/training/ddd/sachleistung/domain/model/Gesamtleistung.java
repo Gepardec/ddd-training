@@ -1,6 +1,5 @@
 package com.gepardec.training.ddd.sachleistung.domain.model;
 
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
 import java.util.LinkedList;
@@ -12,19 +11,22 @@ public class Gesamtleistung {
     @Size(min = 1, max = 50)
     private final String name;
 
-    @NotEmpty
+    @Size(min = 1)
     private List<Einzelleistung> einzelleistungen = new LinkedList<>();
 
     public Gesamtleistung(String name) {
         this.name = Objects.requireNonNull(name, "Eine Gesamtleistung braucht einen Namen");
     }
 
-    // TODO: Implementiere eine Factor Methode, welche eine Gesamtleistung mit Einzelleistungen erzeugt.
+    public static Gesamtleistung neu(String name) {
+        return new Gesamtleistung(name);
+    }
 
-    // TODO: Implementiere eine Domänen Methode, welche die Summe der Einzelleistungen Nettobeträge liefert.
-    // TODO: Implementiere eine Domänen Methode, die die Summe der Einzelleistungen Bruttobeträge liefert.
-    // TODO: Implementiere eine Domänen Methode, die die Summe der Einzelleistungen MWST-Beträge liefert.
-
+    public void addEinzelleistung(final Einzelleistung einzelleistung) {
+        Objects.requireNonNull(einzelleistung, "Null Einzelleistung kann nicht hinzugefügt werden");
+        // TODO: Validate constraints here
+        einzelleistungen.add(einzelleistung);
+    }
 
     public String getName() {
         return name;

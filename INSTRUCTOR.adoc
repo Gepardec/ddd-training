@@ -1,0 +1,51 @@
+= Instructor notes
+
+== 1. Presentation
+
+Walk through of the presentation slides and explain the several training topics.
+
+* `Designing a software` +
+** Emphasize the need of ubiquitous language, and that developer and business people speak the same language
+** Emphasize that developer should understand and care about that business which is more important thant the technologie
+** Design of the application (use-cases, models, events, state changes) depend strongly on understanding the business
+** Requirements are describing the business in form of use cases, allowed states, error handling and so on. We develop on base of it
+** Missing business knowledge needs to be learned and defined again. Just copying existing software contained logic is not the right way
+
+* `Domain Models`
+** They are not data driven, they are not DTO, they contain the business logic equals allowed state changes
+** Preferably they have a natural key, and if not than the id must be created explicitly and not automatically by the database
+** They are rich on logic and handle the state changes and ensure each time the state is valid
+** Therefore that they have all the logic, they are easy to test, because they are just POJOs
+** Value models on the other hand are immutable and cannot have state changes, so no need for doamin methods
+** There is a root models = aggregate root which are responsible for their children
+** Aggregate roots represent a boundary and have a context. A Leistungsfall has one gesamtleistung which has n Einzelleistungen
+
+* `Domain Events`
+** Represent important changes of state
+** Allow decouple of software components and models
+** Their are POJO's value models, immutable after their creation
+** What event bus is used is not important, just the event
+** Observer can act on domain events
+** Can couple sub-domains in a de-coupled fashion
+
+* `Hexagonal architecture`
+** Uses dependency inversion for segregation of the implementation
+** 3 Layered where the domain is in the core and free of used technologies and protocols
+** Around the domain there is the application layer which is a dirigent/interactor for invoking business logic contained in the domain
+** Use-Cases are in the application layer and handle
+*** Transaction
+*** Validation
+*** Invoke business logic (domain)
+*** Store and retrieve objects from a store (Repository, Port)
+** The outermost layer is the infrastructure layer (JPA, JMS, SOAP, REST)
+** Infrastructure is clearly segregated from the domain and application and can therefore easily replaced
+
+* `CQRS (Command and Query segregation)`
+** Command perform actions (saving, updating, calculations)
+** Queries read data (from repositories or ports)
+** Each is a type of use-case responsible for one thing, not both
+** No single service which saves as the state of the model is and reads the data afterwards
+** Mostly used in heavyly load systems, where there are a lot of reads and little writes
+** There can be two teams, one for reading and one for writing
+** Usually have completely separated model representation both optimized for either reading or saving
+

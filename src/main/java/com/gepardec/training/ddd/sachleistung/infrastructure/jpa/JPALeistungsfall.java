@@ -18,10 +18,13 @@ public class JPALeistungsfall extends PanacheEntityBase {
     public String nummer;
 
     @NotNull
+    @Size(min = 10, max = 10)
+    public String vsnr;
+
+    @NotNull
     @Enumerated(EnumType.STRING)
     public Status status;
 
-    @NotNull
     @Size(min = 5, max = 255)
     public String ablehnungGrund;
 
@@ -40,6 +43,9 @@ public class JPALeistungsfall extends PanacheEntityBase {
 
     @Temporal(TemporalType.TIMESTAMP)
     public LocalDateTime modifiziertAm;
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "leistungsfall", cascade = CascadeType.ALL)
+    public JPAGesamtleistung gesamtleistung;
 
     @PrePersist
     private void onPersist(){

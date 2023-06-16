@@ -8,14 +8,8 @@ import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "einzelleistung")
+@Embeddable
 public class JPAEinzelleistung extends PanacheEntityBase  {
-
-
-    @NotNull
-    @EmbeddedId
-    public JPAEinzelleistungId id;
 
     @NotNull
     @Size(min = 1, max = 100)
@@ -31,10 +25,6 @@ public class JPAEinzelleistung extends PanacheEntityBase  {
     @NotNull
     @Column(scale = 2)
     public BigDecimal bruttoBetrag;
-
-    @ManyToOne
-    @JoinColumn(name = "gesamtleistung_id")
-    public JPAGesamtleistung gesamtleistung;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(updatable = false)

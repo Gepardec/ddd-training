@@ -1,0 +1,126 @@
+= DDD Training
+
+This repository holds a example of a service implementing DDD and CQRS, and is used to get a glimpse into DDD
+with CQRS. This example is based on use cases I experienced working on projects in the public austrian social insurance.
+
+== Content of the training
+
+== 1. Design the software
+
+We will talk about the use of DDD and the process necessary when designing a DDD based application.
+
+* How important is ubiquitous language?
+* Where to handle state changes?
+* To recognize business is important not technologie
+
+== 2. DDD Models
+
+We will discuss the DDD models which are already implement, their usage and why they have been implemented as they are.
+
+* What is an aggregate root
+* What is a value model
+* state change handling within domain models
+
+=== What we going to implement?
+
+We will implement
+
+. domain methods which handle state changes
+. Business validation on state changes
+. translator method which translate between representations
+
+== 3. Domain events
+
+We will discuss domain events, why we need them, hoe to implement them, and how to notify registered observers within an Jakarta EE environment.
+
+* What is a domain event for
+* Why using domain events
+* What data is necessary within a domain event
+
+=== What we going to implement?
+
+We will implement
+
+. Domain events which represent state changes of importance
+. the creation and registration of domain events
+. the observers of domain events
+
+== 4. Hexagonal architecture
+
+We will discuss the hexagonal architecture and how it play with DDD.
+
+* What is the architecture for
+* How to realize such an architecture in an application
+* What are the advantages of the hexagonal architecture
+
+== 5. CQRS
+
+We will discuss the segregation of commands and queries and use-cases.
+
+* What is CQRS for
+* why segregating commands and queries
+* what are use cases for
+
+=== What we going to implement?
+
+We will implement
+
+. Repositories
+. Use Cases (CommandHandler and QueryHandler)
+. Validators for complex validation of domain models
+
+== Business Rules
+
+=== Leistungsfall
+
+==== Created
+
+. Cannot be created if
+** a one already exists with the `Nummer`
+** a one already exists for an `VSNR` in state `NEW`.
+
+If one of the rules is broken, then the execution must fail with an exception.
+
+==== State transitions
+
+. Can only be marked `STORNIERT`, when marked as
+**  `NEW`
+**  `ANWEISUNG_FREIGEGEBEN`
+. Can only be marked `ANWEISUNG_FREIGEGEBEN`, when marked as
+**  `NEW`
+. Can only be marked `ANGEWIESEN`, when marked as
+**  `ANWEISUNG_FREIGEGEBEN`
+. Can only be marked `ABGELEHNT` with an explanation (at least 50 characters) and when marked as
+**  `NEW`
+**  `ANWEISUNG_FREIGEGEBEN`
+. Must have set `angeiwesenAm` when marked as `ANGEWIESEN`
+
+If one of the rules is broken, then state transition must not take place and the execution must fail with an error.
+
+==== Events
+
+. Must notify about state transition
+
+Each observer must be notified within the transaction.
+
+=== Gesamtleistung
+
+=== Adding Einzelleistungen
+
+. Can only have `5` Einzelleistungen
+. Max sum netto is `100.00`
+. Max sum brutto is `120.00`
+
+If one of the rules is broken, then the Einzelleistung must not be added but ignored.
+
+==== Events
+
+. Must notify if an invalid Einzelleistung was tried to be added, after the transaction completed.
+
+=== Einzelleistung
+
+. Max netto is `100.00`
+. Max MWST is `20.00`
+
+The must not be an instance of Einzelleistung which breaks this rules. If one is tried to be created invalidly, then the execution must fail with
+and exception.
