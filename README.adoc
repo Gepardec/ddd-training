@@ -11,7 +11,7 @@ We will talk about the use of DDD and the process necessary when designing a DDD
 
 * How important is ubiquitous language?
 * Where to handle state changes?
-* To recognize business is important not technologie
+* To recognize business is important not technology
 
 == 2. DDD Models
 
@@ -19,25 +19,25 @@ We will discuss the DDD models which are already implement, their usage and why 
 
 * What is an aggregate root
 * What is a value model
-* state change handling within domain models
+* State change handling within domain models
 
-=== What we going to implement?
+=== What are we going to implement?
 
 We will implement
 
-. domain methods which handle state changes
+. Domain Logic which handle state changes
 . Business validation on state changes
-. translator method which translate between representations
+. Translator method which translate between representations
 
 == 3. Domain events
 
-We will discuss domain events, why we need them, hoe to implement them, and how to notify registered observers within an Jakarta EE environment.
+We will discuss domain events, why we need them, how to implement them, and how to notify registered observers within an Jakarta EE environment.
 
 * What is a domain event for
 * Why using domain events
 * What data is necessary within a domain event
 
-=== What we going to implement?
+=== What are we going to implement?
 
 We will implement
 
@@ -76,8 +76,8 @@ We will implement
 ==== Created
 
 . Cannot be created if
-** a one already exists with the `Nummer`
-** a one already exists for an `VSNR` in state `NEW`.
+** one already exists with the `Nummer`
+** one already exists for an `VSNR` in state `NEW`.
 
 If one of the rules is broken, then the execution must fail with an exception.
 
