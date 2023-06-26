@@ -30,22 +30,45 @@ public class Leistungsfall {
 
     // TODO: Implementiere Domänen Events
 
-    private Leistungsfall(final String nummer, final String vsnr, final Status status, final Gesamtleistung gesamtleistung) {
-        this.nummer = Objects.requireNonNull(nummer, "Ein Leistungsfall muss eine Id haben");
-        this.vsnr = Objects.requireNonNull(vsnr, "Ein Leistungsfall muss einer VSNR zugeordnet sein");
-        this.status = Objects.requireNonNull(status, "Ein Leistungsfall muss einen Status");
-        this.gesamtleistung = Objects.requireNonNull(gesamtleistung, "Ein Leistungsfall muss eine Gesamtleistung haben");
+
+    private Leistungsfall(Builder builder) {
+        this.nummer = Objects.requireNonNull(builder.nummer, "Ein Leistungsfall muss eine Id haben");
+        this.vsnr = Objects.requireNonNull(builder.vsnr, "Ein Leistungsfall muss einer VSNR zugeordnet sein");
+        this.status = Objects.requireNonNull(builder.status, "Ein Leistungsfall muss einen Status");
+        this.gesamtleistung = Objects.requireNonNull(builder.gesamtleistung, "Ein Leistungsfall muss eine Gesamtleistung haben");
+        this.ablehnungGrund = builder.ablehnungGrund;
+        this.angewiesenAm = builder.angewiesenAm;
+        this.storniertAm = builder.storniertAm;
+        this.abgelehntAm = builder.abgelehntAm;
     }
 
+    public static Leistungsfall.Builder freierBuilder(){
+        return new Builder();
+    }
     // Factory Methode, die einen korrekt initialisierten Leistungsfall erzeugt.
     public static Leistungsfall neu(final String nummer, final String vsnr, final Gesamtleistung gesamtleistung) {
-        return new Leistungsfall(nummer, vsnr, Status.NEU, gesamtleistung);
+        return freierBuilder().setNummer(nummer).setVsnr(vsnr).setStatus(Status.NEU).setGesamtleistung(gesamtleistung).build();
     }
 
     // HINT: Remind the business rules in the README.adoc!
+    public void storniere(){
+        if(!Status.NEU.equals(status) && !Status.ANWEISUNG_FREIGEGEBEN.equals(status)){
+            throw new IllegalStateException("Leistungsfall cannot be storniert because neither NEU nor ANWEISUNG_FREIGEGEBEN");
+        }
+        status = Status.STORNIERT;
+        storniertAm = LocalDateTime.now();
+    }
+
+    public void zurAnweisungFreigeben(){
+        if(!Status.NEU.equals(status)){
+            throw new IllegalStateException("Leistungsfall anweisen not possible because not NEU");
+        }
+        status = Status.ANWEISUNG_FREIGEGEBEN;
+    }
+
+
     // TODO: Implementiere eine Domänen Methode, die den Leistungsfall zur Anweisung freigibt
     // TODO: Implementiere eine Domänen Methode, die den Leistungsfall anweist
-    // TODO: Implementiere eine Domänen Methode, die den Leistungsfall storniert
     // TODO: Implementiere eine Domänen Methode, die den Leistungsfall mit einer Begründung ablehnt
 
     // Getter/Setter
@@ -96,5 +119,60 @@ public class Leistungsfall {
     @Override
     public int hashCode() {
         return Objects.hash(nummer);
+    }
+
+    public static class Builder {
+        private String nummer;
+        private String vsnr;
+        private Gesamtleistung gesamtleistung;
+        private Status status;
+        private String ablehnungGrund;
+        private LocalDateTime angewiesenAm;
+        private LocalDateTime storniertAm;
+        private LocalDateTime abgelehntAm;
+
+        public Builder setNummer(String nummer) {
+            this.nummer = nummer;
+            return this;
+        }
+
+        public Builder setVsnr(String vsnr) {
+            this.vsnr = vsnr;
+            return this;
+        }
+
+        public Builder setGesamtleistung(Gesamtleistung gesamtleistung) {
+            this.gesamtleistung = gesamtleistung;
+            return this;
+        }
+
+        public Builder setStatus(@NotNull Status status) {
+            this.status = status;
+            return this;
+        }
+
+        public Builder setAblehnungGrund(String ablehnungGrund) {
+            this.ablehnungGrund = ablehnungGrund;
+            return this;
+        }
+
+        public Builder setAngewiesenAm(LocalDateTime angewiesenAm) {
+            this.angewiesenAm = angewiesenAm;
+            return this;
+        }
+
+        public Builder setStorniertAm(LocalDateTime storniertAm) {
+            this.storniertAm = storniertAm;
+            return this;
+        }
+
+        public Builder setAbgelehntAm(LocalDateTime abgelehntAm) {
+            this.abgelehntAm = abgelehntAm;
+            return this;
+        }
+
+        public Leistungsfall build() {
+            return new Leistungsfall(this);
+        }
     }
 }

@@ -9,15 +9,15 @@ import jakarta.validation.executable.ValidateOnExecution;
 @ApplicationScoped
 @Transactional
 @ValidateOnExecution
-public class ErstelleLeistungsfallCommandHandler implements ErstelleLeistungsfallUseCase {
+public class StorniereLeistungsfallCommandHandler implements LeistungsfallStornieren {
 
     @Inject
     LeistungsfallRepository leistungsfallRepository;
 
-    // TODO: Implementiere und benutze einen Validator, der prüft ob. 1. Nummer schon vergeben ist
-
     @Override
-    public void erstelle(ErstelleLeistungsfallCommand command) {
-        leistungsfallRepository.neu(command.getLeistungsfall());
+    public void stonieren(String nummer) {
+        var leistungsfall = leistungsfallRepository.findeFuerId(nummer).orElseThrow(() -> new IllegalArgumentException("No Leistungsfall for stornieren"));
+        leistungsfall.storniere();
+        leistungsfallRepository.update(leistungsfall);
     }
 }

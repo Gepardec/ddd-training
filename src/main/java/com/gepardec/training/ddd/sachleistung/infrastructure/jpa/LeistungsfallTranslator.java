@@ -12,6 +12,32 @@ import java.util.stream.Collectors;
 @ApplicationScoped
 public class LeistungsfallTranslator {
 
+    public Leistungsfall toLeistungsfall(JPALeistungsfall jpaLeistungsfall){
+        return Leistungsfall.freierBuilder()
+                .setVsnr(jpaLeistungsfall.vsnr)
+                .setNummer(jpaLeistungsfall.nummer)
+                .setStatus(jpaLeistungsfall.status)
+                .setAbgelehntAm(jpaLeistungsfall.abgelehntAm)
+                .setStorniertAm(jpaLeistungsfall.storniertAm)
+                .setAblehnungGrund(jpaLeistungsfall.ablehnungGrund)
+                .build();
+    }
+
+    private Gesamtleistung toGesamtleistung(JPAGesamtleistung jpaGesamtleistung) {
+        var gesamtleistung = Gesamtleistung.neu(jpaGesamtleistung.name);
+        var it = jpaGesamtleistung.einzelleistungen.iterator();
+        int i = 0;
+        while (it.hasNext()) {
+            gesamtleistung.addEinzelleistung(toEinzelleistung(i, it.next()));
+            i++;
+        }
+        return gesamtleistung;
+    }
+
+    private Einzelleistung toEinzelleistung(int ordinal, JPAEinzelleistung jpaEinzelleistung){
+        return Einzelleistung.neu(ordinal, jpaEinzelleistung.name, jpaEinzelleistung.nettoBetrag, jpaEinzelleistung.mehrwertSteuer);
+    }
+
     public JPALeistungsfall toJPALeistungsfall(final Leistungsfall leistungsfall){
         var jpaGesamtleistung = toJPAGesamtleistung(leistungsfall.getGesamtleistung());
         var jpaLeistungsfall = new JPALeistungsfall();
